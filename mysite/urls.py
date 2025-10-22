@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from hello.views import home, process
+from hello.views import home, process, download_file
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home),
     path('process/', process),
+    path('download/<str:filename>/', download_file, name='download_file'),
 ]
 
 if settings.DEBUG:

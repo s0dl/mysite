@@ -2,11 +2,24 @@ from django.shortcuts import render
 from django.conf import settings
 from hello.forms import UploadFileForm
 from django.core.files.storage import default_storage
+from django.http import HttpResponse
 from django.core.files.base import ContentFile
 from io import BytesIO
 import os
 
 from PIL import Image, ImageOps,ImageFilter
+
+def download_file(request, filename):
+    file_path = f"media/{filename}"
+    
+    if not default_storage.exists(file_path):
+        return HttpResponse("File not found.", status=404)
+    
+    with default_storage.open(file_path, 'rb') as f:
+        response = HttpResponse(f.read(), content_type='application/octet-stream')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+
 
 # Create your views here.
 def applyfilter(image_bytes, preset, filename):
@@ -62,7 +75,10 @@ def home(request):
             else:
                 filtered_url = os.path.join(settings.MEDIA_URL, filtered_path)
             
-            return render(request, 'hello/process.html', {'outputfileURL': filtered_url})
+            return render(request, 'hello/process.html', {
+		'outputfileURL': filtered_url,
+		'outputfileName': filtered_file.name
+	})
     else:
         form = UploadFileForm()
     return render(request, 'hello/index.html', {'form': form})

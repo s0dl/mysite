@@ -14,13 +14,6 @@
       src="{% static 'js/jquery-1.4.2.min.js' %}"></script>
     <script type="text/javascript"
       src="{% static 'js/jquery.smartWizard.js' %}"></script>
-    <script>
-      function download() {
-        img = document.getElementById("outputImg")
-        console.log(img.src)
-        window.location.href=img.src
-      }
-    </script>
 
   </head><body>
 
@@ -43,7 +36,12 @@
           </center>
           <br>
           <img id="outputImg" src="{{ outputfileURL }}" width='800px'>
-          <button onClick="download()">Download</button>
+	  <a href="{% url 'download_file' outputfileName %}">
+  	    <button type="button">Download</button>
+	  </a>
+
+
+
 
         </td></tr>
     </table>
